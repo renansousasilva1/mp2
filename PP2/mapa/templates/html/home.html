@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Responsiva</title>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/placemark/leaflet-kml@main/leaflet-kml.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"
+            type="text/javascript" defer></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"
+            type="text/javascript" defer></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"
+            type="text/javascript" defer></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"
+            type="text/javascript" defer></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs/controls/AbstractControl.js"
+            type="text/javascript" defer></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs/controls/Control.js"
+            type="text/javascript" defer></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs/controls/MapEvents.js"
+            type="text/javascript" defer></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs/ui/Ui.js"
+            type="text/javascript" defer></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs/ui/MapUi.js"
+            type="text/javascript" defer></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet-omnivore@1.1.0/leaflet-omnivore.min.js"></script>
+    <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <!-- Biblioteca para lidar com KMZ e KML -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip/dist/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/togeojson/0.16.0/togeojson.min.js"></script>
+</head>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.navbar {
+    background-color: black;
+    color: white;
+    padding: 10px;
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.brand {
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+}
+.toggle-menu {
+    display: none;
+    font-size: 24px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+.nav-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+}
+.nav-links li {
+    margin-left: 20px;
+}
+.nav-links a {
+    text-decoration: none;
+    color: white;
+}
+
+
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    width: 400px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    margin-left: -6px;
+}
+
+.search-bar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.search-bar .fas {
+    font-size: 18px;
+    color: #888;
+}
+
+.route-bar {
+    display: none;
+    flex-direction: column;
+    margin-top: 10px;
+    width: 400px;
+}
+
+.route-bar input {
+    margin-bottom: 5px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(105% - 20px);
+}
+
+.route-bar button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.route-bar button:hover {
+    background-color: #0056b3;
+}
+
+/* Definindo o tamanho do mapa */
+#map {
+    width: 100%;
+    height: 88vh;
+}
+.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
+    border: 8px solid rgba(0, 0, 0, 0.2);
+    background-clip: padding-box;
+}
+
+
+/* Estilo para telas menores */
+@media (max-width: 768px) {
+    .toggle-menu {
+        display: block;
+    }
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+    }
+    .nav-links.active {
+        display: flex;
+    }
+}
+    </style>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="brand">Logo</a>
+            <button class="toggle-menu" id="toggle-menu">
+                ☰
+            </button>
+            <ul class="nav-links" id="nav-links" style="margin-block: auto;">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Sobre</a></li>
+                <li><a href="#">Serviços</a></li>
+                <li><a href="#">Contato</a></li>
+            </ul>
+            
+        </div>
+    </nav>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#toggle-menu').click(function () {
+                $('#nav-links').toggleClass('active');
+            });
+        });
+    </script>
+    <script src="https://unpkg.com/leaflet-omnivore@latest/leaflet-omnivore.min.js"></script>
+
+    
+<body>
+
+
+    <div class="search-bar" style="margin-top:20px; margin-left:20px; position:absolute; z-index:2;">
+        
+        <input type="text" id="origin" placeholder="Pesquise no Mapas">
+        <button id="search-icon">
+            <i class="fas fa-search"></i>   
+        </button>
+        <button id="route-icon">
+            <i class="fa-solid fa-route" style="color: #0050db;" alt="Traçar Rotas"></i>
+        </button>
+    </div>
+
+    <div class="route-bar" id="route-bar" style="margin-left:20px; position:absolute; z-index:2; margin-top:62px; box-shadow:black;">
+        <input type="text" id="destination" placeholder="Digite seu Destino">
+        <button id="find-route">Buscar Rota</button>
+    </div>
+
+    <script>
+        const routeIcon = document.getElementById('route-icon');
+        const routeBar = document.getElementById('route-bar');
+
+        routeIcon.addEventListener('click', () => {
+            routeBar.style.display = routeBar.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        document.getElementById('find-route').addEventListener('click', () => {
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            if (origin && destination) {
+                alert(`Traçando rota de ${origin} para ${destination}`);
+            } else {
+                alert('Por favor, preencha o ponto de origem e destino.');
+            }
+        });
+    </script>
+
+
+    <div id="map" style="z-index:0"></div>
+
+    <script>
+      // Inicializa o mapa
+      const map = L.map('map').setView([0, 0], 2);
+    
+      // Adiciona o layer base
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+    
+      // Adiciona um círculo azul para a localização do usuário
+      var userMarker = L.circleMarker([0.0, -0.09], {
+        radius: 10,
+        fillColor: "#0f356b",
+        color: "#3388ff",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.5
+      }).addTo(map);
+    
+      // Função para atualizar a localização do usuário
+      function updateLocation(position) {
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+    
+        // Atualiza a posição do marcador
+        userMarker.setLatLng([lat, lon]);
+        map.setView([lat, lon], 13); // Centraliza o mapa na nova posição
+      }
+    
+      // Função para lidar com erros de geolocalização
+      function handleError(error) {
+        console.warn(`ERRO (${error.code}): ${error.message}`);
+      }
+    
+      // Solicita a localização do usuário
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(updateLocation, handleError, {
+          enableHighAccuracy: true,
+          maximumAge: 30000,
+          timeout: 27000
+        });
+      } else {
+        alert("Geolocalização não é suportada por este navegador.");
+      }
+    
+    map.zoomControl.setPosition('bottomright');
+    // Caminhos dos arquivos KMZ
+    
+    const kmzUrls = [
+        '/static/app/5m1.kmz',
+        '/static/app/5m2.kmz',
+        '/static/app/ada.kmz',
+        '/static/app/tcp.kmz',
+        '/static/app/cv.kmz'
+    ];
+
+        // Função para definir o ícone padrão para a camada
+        function getDefaultIcon(layerName) {
+            let iconUrl;
+        
+            // Definindo ícones específicos para cada camada
+            const iconConfig = {
+                'Camada 1': '/static/5m.png',  // Ícone específico para camada 1
+                'Camada 2': '/static/5m.png',  // Ícone específico para camada 2
+                'Camada 3': '/static/ada.png',  // Ícone específico para camada 3
+                'Camada 4': '/static/tcp.png',   // Ícone específico para camada 4
+                'Camada 5': '/static/cv.png',
+            };
+    
+            // Retorna o ícone da camada ou um ícone padrão
+            iconUrl = iconConfig[layerName] || '/static/default-icon.png';  // Ícone padrão se a camada não estiver configurada
+    
+            return L.icon({
+                iconUrl: iconUrl,
+                iconSize: [40, 40],  // Tamanho do ícone
+                iconAnchor: [12, 41],  // Posição do ícone no marcador
+                popupAnchor: [1, -34]  // Posição do popup em relação ao ícone
+            });
+        }
+    
+        // Função para carregar o KMZ e adicionar ao mapa
+        function loadKmzLayer(kmzUrl, layerName) {
+            fetch(kmzUrl)
+                .then(response => response.arrayBuffer())  // Carrega o KMZ como um ArrayBuffer
+                .then(buffer => {
+                    const zip = new JSZip();
+                    return zip.loadAsync(buffer);  // Descompacta o arquivo KMZ
+                })
+                .then(zip => {
+                    // Encontra o arquivo KML dentro do KMZ
+                    const kmlFile = Object.keys(zip.files).find(fileName => fileName.endsWith('.kml'));
+                    if (!kmlFile) throw new Error('Arquivo KML não encontrado no KMZ');
+                    return zip.files[kmlFile].async('text');
+                })
+                .then(kmlText => {
+                    const parser = new DOMParser();
+                    const kml = parser.parseFromString(kmlText, 'text/xml');  // Converte o KML para XML
+                    const geojson = toGeoJSON.kml(kml);  // Converte KML para GeoJSON
+    
+                    // Cria a camada GeoJSON a partir do GeoJSON
+                    const geoJsonLayer = L.geoJSON(geojson, {
+                        style: feature => ({
+                            color: feature.properties.stroke || 'blue',
+                            fillColor: feature.properties.fill || 'blue',
+                            fillOpacity: feature.properties['fill-opacity'] || 0.5,
+                            weight: feature.properties['stroke-width'] || 2
+                        }),
+                        pointToLayer: function (feature, latlng) {
+                            // Chama a função para obter o ícone padrão para a camada
+                            const icon = getDefaultIcon(layerName);
+                            
+                            // Cria o marcador com o ícone
+                            return L.marker(latlng, { icon: icon });
+                        },
+                        onEachFeature: (feature, layer) => {
+                            const props = feature.properties || {};
+                            if (props.name || props.description) {
+                                layer.bindPopup(`<b>${props.name || 'Sem nome'}</b><br>${props.description || 'Sem descrição'}`);
+                            }
+                        }
+                    });
+    
+                    // Adiciona a camada GeoJSON ao mapa
+                    geoJsonLayer.addTo(map);
+    
+                    
+                })
+                .catch(error => console.error('Erro ao processar o KMZ:', error));  // Tratamento de erro
+        }
+    
+        // Objeto para armazenar as camadas de sobreposição
+        const overlayMaps = {};
+    
+        // Carregar todos os arquivos KMZ como camadas separadas
+        kmzUrls.forEach((url, index) => {
+            loadKmzLayer(url, `Camada ${index + 1}`);
+        });
+    </script>
+    
+
+</body>
+</html>
